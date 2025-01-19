@@ -1,0 +1,8 @@
+#include <coll/error.h>
+#include <coll/chars.h>
+#include <coll/array.h>
+#include <coll/list.h>
+#include <coll/stack.h>
+#include <coll/queue.h>
+
+using namespace coll;
