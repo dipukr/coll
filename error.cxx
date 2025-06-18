@@ -18,5 +18,4 @@ void Error::assert(bool flag, const char *what)
 	}
 }
 
-
 }
