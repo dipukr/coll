@@ -1,6 +1,4 @@
-#ifndef COLL_ARRAY_H
-#define COLL_ARRAY_H
-
+#pragma once
 #include <ostream>
 #include "error.h"
 
@@ -54,7 +52,7 @@ public:
 	void reserve(size_t sz);
 	void clear();
 
-	size_t size() const;
+	uint size() const;
 	bool empty() const;
 	bool notEmpty() const;
 };
@@ -310,5 +308,3 @@ std::ostream& operator<<(std::ostream &lhs, const Array<T> &rhs)
 }
 
 }
-
-#endif

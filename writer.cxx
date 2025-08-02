@@ -15,6 +15,8 @@ FileWriter::~FileWriter()
 	fclose(stream);
 }
 
+
+
 void FileWriter::write(S8  v) {write((char*) &v, sizeof(v));}
 void FileWriter::write(U8  v) {write((char*) &v, sizeof(v));}
 void FileWriter::write(S16 v) {write((char*) &v, sizeof(v));}

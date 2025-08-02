@@ -1,6 +1,4 @@
-#ifndef COLL_STACK_H
-#define COLL_STACK_H
-
+#pragma once
 #include <ostream>
 #include "error.h"
 
@@ -167,5 +165,3 @@ std::ostream& operator<<(std::ostream &lhs, const Stack<T> &rhs)
 }
 
 }
-
-#endif

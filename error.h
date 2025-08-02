@@ -1,7 +1,8 @@
-#ifndef COLL_ERROR_H
-#define COLL_ERROR_H
+#pragma once
 
 namespace coll {
+
+typedef uint unsigned int;	
 
 struct Error
 {
@@ -10,5 +11,3 @@ struct Error
 };
 
 }
-
-#endif

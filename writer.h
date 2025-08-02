@@ -1,6 +1,4 @@
-#ifndef NEEM_WRITER_H
-#define NEEM_WRITER_H
-
+#pragma once
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
