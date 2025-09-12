@@ -1,6 +1,6 @@
 package main;
 
-public class Lists {
+public class List {
 
 	public class Node {
 		public int data;
@@ -152,7 +152,7 @@ public class Lists {
 	}
 	
 	public static void main(final String[] args) {
-		var list = new Lists();
+		var list = new List();
 		list.test();
 	}
 }
