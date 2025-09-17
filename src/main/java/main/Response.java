@@ -1,54 +1,63 @@
 package main;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Response {
-	
-	private final OutputStream out;
-	private int status = 200;
-	private String reason = "OK";
-	private final Map<String, String> headers = new LinkedHashMap<>();
-	private byte[] body = new byte[0];
 
-	public Response(OutputStream out) {
-		this.out = out;
+	public int statusCode;
+	public String reasonPhrase;
+	public Map<String, String> headers;
+	public String body;
+
+	private Response(Builder builder) {
+		this.statusCode = builder.statusCode;
+		this.reasonPhrase = builder.reasonPhrase;
+		this.headers = builder.headers;
+		this.body = builder.body;
 	}
 
-	public Response status(int code, String reason) {
-		this.status = code;
-		this.reason = reason;
-		return this;
+	public static Builder builder() {
+		return new Builder();
 	}
 
-	public Response header(String name, String value) {
-		headers.put(name, value);
-		return this;
-	}
+	public static class Builder {
+		private int statusCode;
+		private String reasonPhrase;
+		private Map<String, String> headers = new HashMap<>();
+		private String body;
 
-	public Response text(String text) {
-		this.body = text.getBytes(StandardCharsets.UTF_8);
-		header("Content-Type", "text/plain; charset=utf-8");
-		return this;
-	}
+		public Builder statusCode(int statusCode) {
+			this.statusCode = statusCode;
+			return this;
+		}
 
-	public void send() throws IOException {
-		header("Date", DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now()));
-		header("Server", "MiniHttpServer/1.0 (virtual-threads)");
-		header("Connection", "close"); // one-request-per-connection
-		header("Content-Length", Integer.toString(body.length));
-		var writer = new StringBuilder();
-		writer.append("HTTP/1.1 ").append(status).append(' ').append(reason).append("\r\n");
-		for (var elem: headers.entrySet())
-			writer.append(elem.getKey()).append(": ").append(elem.getValue()).append("\r\n");
-		writer.append("\r\n");
-		out.write(writer.toString().getBytes(StandardCharsets.UTF_8));
-		out.write(body);
-		out.flush();
+		public Builder reasonPhrase(String reasonPhrase) {
+			this.reasonPhrase = reasonPhrase;
+			return this;
+		}
+
+		public Builder header(String key, String value) {
+			this.headers.put(key, value);
+			return this;
+		}
+
+		public Builder headers(Map<String, String> headers) {
+			headers.forEach((k, v) -> headers.put(k, v));
+			return this;
+		}
+
+		public Builder body(String body) {
+			this.body = body;
+			return this;
+		}
+
+		public Response build() {
+			if (statusCode == 0)
+				throw new IllegalStateException("HTTP Status code must be provided.");
+			if (reasonPhrase == null)
+				throw new IllegalStateException("HTTP Reason phrase must be provided.");
+			return new Response(this);
+		}
 	}
 }
