@@ -1,18 +1,16 @@
 package main;
 
-import java.util.concurrent.TimeUnit;
-
 public class TokenBucket {
 
 	private int maxTokens;
-	private int tokens;
+	private int currTokens;
 	private int refillAmount;
 	private int refillInterval;
 	private int lastRefillTime;
 	
-	public TokenBucket(int maxTokens, int tokens, int refillAmount, int refillInterval) {
+	public TokenBucket(int maxTokens, int currTokens, int refillAmount, int refillInterval) {
 		this.maxTokens = maxTokens;
-		this.tokens = tokens;
+		this.currTokens = currTokens;
 		this.refillAmount = refillAmount;
 		this.refillInterval = refillInterval;
 		this.lastRefillTime = currentTimeSeconds();
@@ -21,7 +19,7 @@ public class TokenBucket {
 	public boolean processRequest() {
 		refillBucket();
 		if (!empty()) {
-			tokens -= 1;
+			currTokens -= 1;
 			return true;
 		}
 		return false;
@@ -31,27 +29,21 @@ public class TokenBucket {
 		int now = currentTimeSeconds();
 		int timeElapsed = lastRefillTime - now;
 		int refillCycle = timeElapsed / refillInterval;
-		tokens = Math.min(maxTokens, tokens + refillCycle * refillAmount);
+		currTokens = Math.min(maxTokens, currTokens + refillCycle * refillAmount);
 		lastRefillTime = now - (timeElapsed % refillInterval);
 	}
 
 	public boolean empty() {
-		return tokens == 0;
+		return currTokens == 0;
 	}
 	
 	public int currentTimeSeconds() {
 		long now = System.currentTimeMillis();
-		return (int) TimeUnit.SECONDS.convert(now, TimeUnit.MILLISECONDS);
+		return (int) (now / 1000);
 	}
-
 
 	public static void main(String[] args) throws Exception {
 		TokenBucket limiter = new TokenBucket(5, 5, 2, 10);
-		for (int i = 1; i <= 15; i++) {
-			if (limiter.processRequest()) {
-				System.out.printf("[%d] Processed.\n", i);
-			} else System.out.printf("[%d] Rate limited.\n", i);
-			Thread.sleep(1000);
-		}
+		System.out.println(limiter.currentTimeSeconds());
 	}
 }
