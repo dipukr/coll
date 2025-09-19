@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class Request {
+	
+	public static final Request BAD = null;
 
 	public final String method;
 	public final String url;
