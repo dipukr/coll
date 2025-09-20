@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 public class FileLogger {
 	
+	private DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 	private PrintWriter writer;
 
 	public FileLogger(PrintWriter writer) {
@@ -34,10 +37,11 @@ public class FileLogger {
 		var data = new StringBuilder();
 		data.append(String.format("[%s] ", kind));
 		data.append(LocalDateTime.now().toString());
-		data.append(':');
+		data.append(": ");
 		data.append(String.format(format, args));
 		data.append('\n');
 		writer.write(data.toString());
+		writer.flush();
 	}
 	
 	public static FileLogger getLogger(String fileName) {

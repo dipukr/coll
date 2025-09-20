@@ -10,7 +10,8 @@ public class Main {
 					.statusCode(200)
 					.reasonPhrase("OK")
 					.header("Content-Type", "text/plain; charset=utf-8")
-					.body(body).build();
+					.body(body)
+					.build();
 		});
 		server.start();
 	}

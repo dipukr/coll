@@ -1,22 +1,16 @@
 package main;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URLDecoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -24,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HTTPServer {
 
@@ -31,7 +26,7 @@ public class HTTPServer {
 	private boolean running = false;
 	private ServerSocket serverSocket;
 	private Router router = new Router();
-	private ExecutorService pool = Executors.newFixedThreadPool(4);
+	private ExecutorService pool = Executors.newFixedThreadPool(20);
 	private FileLogger logger = FileLogger.getLogger("/tmp/http_server.log");
 
 	public void register(String method, String path, Handler handler) {
@@ -46,9 +41,9 @@ public class HTTPServer {
 			try {
 				Socket client = serverSocket.accept();
 				pool.submit(() -> handleClient(client));
-			} catch (SocketException ex) {
+			} catch (IOException ex) {
 				if (running)
-					ex.printStackTrace();
+					logger.error(ex.getMessage());
 			}
 		}
 	}
@@ -58,6 +53,7 @@ public class HTTPServer {
 		if (serverSocket != null)
 			serverSocket.close();
 		pool.shutdownNow();
+		logger.info("Server stopped.");
 	}
 
 	public void handleClient(Socket client) {
@@ -71,7 +67,7 @@ public class HTTPServer {
 			if (requestLine == null || requestLine.isEmpty()) return;
 			String[] parts = requestLine.split(" ");
 			if (parts.length < 3) {
-				sendSimpleResponse(writer, 400, "Bad Request", "Malformed request line");
+				sendBadResponse(writer, 400, "Bad Request", "Malformed request line");
 				return;
 			}
 			String method = parts[0];
@@ -90,7 +86,9 @@ public class HTTPServer {
 			if (headers.containsKey("content-length")) {
 				try {
 					contentLength = Integer.parseInt(headers.get("content-length"));
-				} catch (NumberFormatException ex) {}
+				} catch (NumberFormatException ex) {
+					logger.error(ex.getMessage());
+				}
 			}
 			char[] bodyChars = new char[contentLength];
 			String body = "";
@@ -145,7 +143,8 @@ public class HTTPServer {
 				response.headers = new HashMap<>();
 			if (!response.headers.containsKey("Content-Length")) {
 				response.headers.put("Content-Length", String
-						.valueOf(response.body == null ? 0 : response.body.getBytes(UTF_8).length));
+						.valueOf(response.body == null ? 0 : 
+							response.body.getBytes(UTF_8).length));
 			}
 			if (!response.headers.containsKey("Connection"))
 				response.headers.put("Connection", "close");
@@ -157,13 +156,11 @@ public class HTTPServer {
 				writer.write(response.body);
 			writer.flush();
 		} catch (IOException ex) {
-			System.out.println(ex.getClass().getName());
-			System.out.println(ex.getMessage());
-			System.exit(0);
+			logger.error(ex.getMessage());
 		}
 	}
 
-	public void sendSimpleResponse(BufferedWriter writer, int statusCode, String reason, String body) throws IOException {
+	public void sendBadResponse(BufferedWriter writer, int statusCode, String reason, String body) throws IOException {
 		writer.write("HTTP/1.1 " + statusCode + " " + reason + "\r\n");
         writer.write("Content-Type: text/plain; charset=utf-8\r\n");
         writer.write("Content-Length: " + body.getBytes(UTF_8).length + "\r\n");
@@ -186,7 +183,9 @@ public class HTTPServer {
 					String v = URLDecoder.decode(pair.substring(idx + 1), UTF_8);
 					queryParams.put(k, v);
 				} else queryParams.put(URLDecoder.decode(pair, UTF_8), "");
-			} catch (IllegalArgumentException e) {}
+			} catch (IllegalArgumentException e) {
+				logger.error(e.getMessage());
+			}
 		}
 		return queryParams;
 	}
