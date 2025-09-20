@@ -1,15 +1,13 @@
 package main;
 
+import org.json.JSONObject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
-
-import org.json.JSONObject;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class AuthServer {
 	
@@ -22,29 +20,27 @@ public class AuthServer {
 	
 	public void start() {
 		try {
-			server = HttpServer.create(new InetSocketAddress(port), 0);
+			InetSocketAddress socketAddress = new InetSocketAddress(port);
+			server = HttpServer.create(socketAddress, 0);
 		} catch (IOException e) {
 			System.out.println("ERROR: " + e.getMessage());
 			System.exit(0);
 		}
-
 		server.createContext("/register", new RegisterHandler());
 		server.createContext("/login", new LoginHandler());
-
 		server.setExecutor(null);
 		server.start();
-		System.out.printf("Server started on port: %d\n", port);
+		System.out.println("Server started on port: " + port);
 	}
 
 	public class RegisterHandler implements HttpHandler {
 		@Override
 		public void handle(HttpExchange exchange) throws IOException {
-			if (!exchange.getRequestMethod().equalsIgnoreCase("POST")) {
+			if (!exchange.getRequestMethod().equals("POST")) {
 				exchange.sendResponseHeaders(405, -1);
 				return;
 			}
-
-			String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+			String body = new String(exchange.getRequestBody().readAllBytes(), UTF_8);
 			JSONObject json = new JSONObject(body);
 			String username = json.getString("username");
 			String password = json.getString("password");
@@ -67,7 +63,7 @@ public class AuthServer {
 				exchange.sendResponseHeaders(405, -1);
 				return;
 			}
-			String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+			String body = new String(exchange.getRequestBody().readAllBytes(), UTF_8);
 			JSONObject json = new JSONObject(body);
 			String username = json.getString("username");
 			String password = json.getString("password");

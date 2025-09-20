@@ -1,5 +1,6 @@
 package main;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,9 +8,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Locale;
@@ -18,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HTTPServer {
 
@@ -39,8 +39,8 @@ public class HTTPServer {
 		logger.info("HTTP server started on port: " + port);
 		while (running) {
 			try {
-				Socket client = serverSocket.accept();
-				pool.submit(() -> handleClient(client));
+				Socket clientSocket = serverSocket.accept();
+				pool.submit(() -> handleClient(clientSocket));
 			} catch (IOException ex) {
 				if (running)
 					logger.error(ex.getMessage());
@@ -142,8 +142,8 @@ public class HTTPServer {
 			if (response.headers == null)
 				response.headers = new HashMap<>();
 			if (!response.headers.containsKey("Content-Length")) {
-				response.headers.put("Content-Length", String
-						.valueOf(response.body == null ? 0 : 
+				response.headers.put("Content-Length",
+						String.valueOf(response.body == null ? 0 : 
 							response.body.getBytes(UTF_8).length));
 			}
 			if (!response.headers.containsKey("Connection"))

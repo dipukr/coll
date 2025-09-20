@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class FileLogger {
 	
@@ -18,15 +18,15 @@ public class FileLogger {
 	}
 	
 	public void info(String format, Object ...args) {
-		log("INFO", format, args);
+		log("  INFO", format, args);
 	}
 	
 	public void warn(String format, Object ...args) {
-		log("WARN", format, args);
+		log("  WARN", format, args);
 	}
 	
 	public void error(String format, Object ...args) {
-		log("ERROR", format, args);
+		log(" ERROR", format, args);
 	}
 	
 	public void access(String format, Object ...args) {
@@ -35,9 +35,8 @@ public class FileLogger {
 	
 	public void log(String kind, String format, Object ...args) {
 		var data = new StringBuilder();
-		data.append(String.format("[%s] ", kind));
-		data.append(LocalDateTime.now().toString());
-		data.append(": ");
+		data.append(String.format("[%s:%s] ", formatter.format(new Date()), kind));
+		data.append(' ');
 		data.append(String.format(format, args));
 		data.append('\n');
 		writer.write(data.toString());

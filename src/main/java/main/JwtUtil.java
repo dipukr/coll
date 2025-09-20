@@ -1,9 +1,11 @@
 package main;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 import java.util.Date;
+import java.security.Key;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtUtil {
 	

@@ -41,9 +41,4 @@ public class TokenBucket {
 		long now = System.currentTimeMillis();
 		return (int) (now / 1000);
 	}
-
-	public static void main(String[] args) throws Exception {
-		TokenBucket limiter = new TokenBucket(5, 5, 2, 10);
-		System.out.println(limiter.currentTimeSeconds());
-	}
 }
