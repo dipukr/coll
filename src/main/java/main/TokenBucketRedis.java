@@ -16,8 +16,8 @@ public class TokenBucketRedis {
 	}
 	
 	public boolean isAllowed(String clientId) {
-		String keyCount = "rate_limit:" + clientId + ":count";
-		String keyLastRefill = 	"rate_limit:" + clientId + "refillRate";
+		String keyCount = clientId + ":count";
+		String keyLastRefill = 	clientId + ":lastRefill";
 		Transaction transaction = redis.multi();
 		transaction.get(keyLastRefill);
 		transaction.get(keyCount);

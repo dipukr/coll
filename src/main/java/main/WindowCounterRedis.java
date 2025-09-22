@@ -3,13 +3,13 @@ package main;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
-public class FixedWindowRedis {
+public class WindowCounterRedis {
 	
 	private Jedis redis;
 	private int winSize;
 	private int limit;
 	
-	public FixedWindowRedis(Jedis redis, int limit, int winSize) {
+	public WindowCounterRedis(Jedis redis, int limit, int winSize) {
 		this.redis = redis;
 		this.limit = limit;
 		this.winSize = winSize;
