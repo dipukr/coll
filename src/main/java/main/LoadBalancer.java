@@ -22,8 +22,8 @@ public class LoadBalancer {
 	public static final int RESOURCE = 7;
 
 	private FileLogger logger = FileLogger.getLogger("/tmp/load_balancer.log");
-	private List<ServerData> backends = new CopyOnWriteArrayList<>();
 	private ExecutorService pool = Executors.newFixedThreadPool(20);
+	private List<Server> backends = new CopyOnWriteArrayList<>();
 	private AtomicInteger counter = new AtomicInteger(0);
 	private boolean running = false;
 	private ServerSocket serverSocket;
@@ -53,18 +53,18 @@ public class LoadBalancer {
 		logger.info("Server stopped.");
 	}
 
-	public void addServer(ServerData serverData) {
-		backends.add(serverData);
+	public void addServer(Server server) {
+		backends.add(server);
 	}
 
-	public void removeServer(ServerData serverData) {
-		backends.remove(serverData);
+	public void removeServer(Server server) {
+		backends.remove(server);
 	}
 
 	public void handleClient(Socket client) {
 		int index = counter.getAndIncrement() % backends.size();
-		ServerData backend = backends.get(index);
-		try (Socket backendSocket = new Socket(backend.host, backend.port);
+		Server backend = backends.get(index);
+		try (Socket backendSocket = new Socket(backend.getHost(), backend.getPort());
 				InputStream clientIn = client.getInputStream();
 				OutputStream clientOut = client.getOutputStream();
 				InputStream backendIn = backendSocket.getInputStream();

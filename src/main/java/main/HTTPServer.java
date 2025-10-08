@@ -1,6 +1,7 @@
 package main;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
@@ -171,7 +171,7 @@ public class HTTPServer {
 	}
 
 	public Map<String, String> parseQueryParams(String query) {
-		Map<String, String> queryParams = new HashMap<>();
+		var queryParams = new HashMap<String, String>();
 		if (query == null || query.isEmpty())
 			return queryParams;
 		String[] pairs = query.split("&");

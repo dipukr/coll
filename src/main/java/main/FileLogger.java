@@ -18,15 +18,15 @@ public class FileLogger {
 	}
 	
 	public void info(String format, Object ...args) {
-		log("  INFO", format, args);
+		log("INFO", format, args);
 	}
 	
 	public void warn(String format, Object ...args) {
-		log("  WARN", format, args);
+		log("WARN", format, args);
 	}
 	
 	public void error(String format, Object ...args) {
-		log(" ERROR", format, args);
+		log("ERROR", format, args);
 	}
 	
 	public void access(String format, Object ...args) {
@@ -56,7 +56,7 @@ public class FileLogger {
 		} catch (IOException e) {
 			System.out.println("ERROR: " + e.getMessage());
 			System.exit(0);
+			return null;
 		}
-		return null;
 	}
 }

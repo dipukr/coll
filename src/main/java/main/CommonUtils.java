@@ -7,9 +7,7 @@ public class CommonUtils {
 	public static MessageDigest getSha256() {
 		try {
 			return MessageDigest.getInstance("SHA-256");
-		} catch (Exception e) {
-			return null;
-		}
+		} catch (Exception e) {return null;}
 	}
 	
 	public static long getLong(List<Object> results, int i, long defval) {

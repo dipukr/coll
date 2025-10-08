@@ -2,17 +2,13 @@ package main;
 
 public class Node {
 	
-	public String host;
-	public int port;
-	public int cpuCount;
-	
-	public Node(String host, int port, int cpuCount) {
-		this.host = host;
-		this.port = port;
-		this.cpuCount = cpuCount;
-	}
-	
-	public static Node of(String host, int port, int cpuCount) {
-		return new Node(host, port, cpuCount);
+	public String key;
+	public Object val;
+	public Node next;
+	public Node prev;
+
+	public Node(String key, Object val) {
+		this.key = key;
+		this.val = val;
 	}
 }
