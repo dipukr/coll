@@ -12,7 +12,7 @@ public class ConsistentHash {
 	
 	public ConsistentHash(int replicaCount) {
 		this.replicaCount = replicaCount;
-		this.md = CommonUtils.getSha256();
+		this.md = Commons.getSha256();
 	}
 	
 	public void addServer(String server) {

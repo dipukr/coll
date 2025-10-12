@@ -23,8 +23,8 @@ public class TokenBucketRedis {
 		transaction.get(keyCount);
 		var results = transaction.exec();
 		long currentTime = System.currentTimeMillis();
-		long lastRefillTime = CommonUtils.getLong(results, 0, currentTime);
-		int tokenCount = CommonUtils.getInt(results, 1, bucketCapacity);
+		long lastRefillTime = Commons.getLong(results, 0, currentTime);
+		int tokenCount = Commons.getInt(results, 1, bucketCapacity);
 		long elapsedTimeMs = currentTime - lastRefillTime;
 		double elapsedTimeSecs = elapsedTimeMs / 1000.0;
 		int tokensToAdd = (int) (elapsedTimeSecs * refillRate);

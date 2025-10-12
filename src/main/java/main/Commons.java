@@ -3,7 +3,7 @@ package main;
 import java.security.MessageDigest;
 import java.util.List;
 
-public class CommonUtils {
+public class Commons {
 	public static MessageDigest getSha256() {
 		try {
 			return MessageDigest.getInstance("SHA-256");
