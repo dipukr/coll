@@ -18,10 +18,8 @@ public class Lists {
 			File file = queue.poll();
 			if (file.isDirectory()) {
 				dirPaths.add(file.getCanonicalPath() + "/");
-				File[] files = file.listFiles();
-				if (files != null)
-					for (File elem: files)
-						queue.offer(elem);
+				for (File elem: file.listFiles())
+					queue.offer(elem);
 			} else if (file.isFile()) {
 				String filePath = file.getCanonicalPath();
 				filePaths.add(filePath);

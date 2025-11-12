@@ -3,7 +3,6 @@ package main;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 public class Clean {
 	public static void main(String[] args) {
@@ -19,9 +18,8 @@ public class Clean {
 			}
 			if (file.isFile() && file.canExecute()) {
 				String filePath = file.getAbsolutePath();
-				Optional<String> first = null;
 				try {
-					first = Files.lines(Path.of(filePath)).findFirst();
+					var first = Files.lines(Path.of(filePath)).findFirst();
 					if (first.isPresent() && first.get().startsWith("#!"));
 					else file.delete();
 				} catch (Exception e) {
